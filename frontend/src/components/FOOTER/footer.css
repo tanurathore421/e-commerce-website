@@ -1,0 +1,39 @@
+
+
+.footer {
+  width: 100%;
+  background-color: #1f2937;
+  color: #ffffff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+
+  padding: 20px 30px;
+  box-sizing: border-box;
+
+  /* Keep footer in normal document flow */
+  position: relative;
+
+  margin-top: 40px;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.footer p:nth-child(2) {
+  color: #38bdf8;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 20px;
+  }
+}
+
