@@ -2,14 +2,15 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Auth = require("../MODELS/auth.model");
 
+
 // Register
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password , phone, address} = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !phone || !address) {
       return res.status(400).json({
-        message: "Name, email and password are required",
+        message: "All fields are required",
       });
     }
 
@@ -29,6 +30,8 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      phone,
+      address
     });
 
     res.status(201).json({
@@ -37,6 +40,8 @@ const registerUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        address: user.address,
       },
     });
   } catch (error) {
@@ -83,7 +88,7 @@ const loginUser = async (req, res) => {
      // Generate token
     const token = jwt.sign(
       {
-        id: user._id,
+        userId: user._id,
         email: user.email,
       },
       process.env.JWT_SECRET,
@@ -92,15 +97,20 @@ const loginUser = async (req, res) => {
       }
     );
 
+    
+    console.log("Token:", token);
+    console.log("Token type:", typeof token);
+
+
     // Login successful
     res.status(200).json({
       message: "Login successful",
       user: {
-        id: user._id,
+        userId: user._id,
         name: user.name,
         email: user.email,
-        token: token,
       },
+      token:token,
     });
   } catch (error) {
     res.status(500).json({
@@ -110,8 +120,39 @@ const loginUser = async (req, res) => {
   }
 };
 
+//get profile
+const getProfile =  async (req, res) => {
+    try {
+
+      // req.userId came from authMiddleware
+      const user = await Auth
+        .findById(req.userId)
+        .select("-password");
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      res.json(user);
+
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Could not get profile",
+      });
+    }
+  };
+
+
+
+
 module.exports = {
   registerUser,
   loginUser,
+  getProfile,
+ 
 };
 

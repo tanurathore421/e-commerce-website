@@ -1,12 +1,18 @@
 import  { useState } from "react";
 import axios from "axios";
 import "./Register.css";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+
+   const navigate = useNavigate();
+  
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleRegister = async(e) => {
     e.preventDefault();
@@ -28,19 +34,23 @@ function Register() {
         {
           name,
           email,
-          password
+          password,
+          phone,
+          address
         }
       );
 
       alert(response.data.message || "Registration successful!");
 
-         window.location.href="/"
+            navigate("/login");
 
       //clear input fields
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+      setPhone("");
+      setAddress("");
 
     }catch(error){
       alert(error.response.data.message || "Registration failed");
@@ -92,6 +102,30 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          
+          <div className="register-input-group">
+            <label>Phone</label>
+            <input
+              type="number"
+              placeholder="Enter your phone number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          
+          <div className="register-input-group">
+            <label>Address</label>
+            <input
+              type="text"
+              placeholder="Enter your address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+
+         
 
           <div className="register-input-group">
             <label>Confirm Password</label>

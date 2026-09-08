@@ -1,4 +1,145 @@
-import  { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
+import "./Login.css";
+import { useNavigate } from "react-router-dom";
+
+function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+  e.preventDefault();
+
+  console.log("1. Login button clicked");
+
+  if (!email || !password) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  try {
+    console.log("2. Sending request...");
+
+    const response = await axios.post(
+      "http://localhost:3000/api/auth/login",
+      {
+        email,
+        password,
+      }
+    );
+
+    console.log("3. Backend response:", response.data);
+
+    const token = response.data.token;
+
+    console.log("4. Token:", token);
+
+    if (!token) {
+      alert("Token not received from backend");
+      return;
+    }
+
+    localStorage.setItem("token", token);
+
+    console.log("5. Token saved");
+
+    navigate("/profile");
+
+    console.log("6. Navigate called");
+
+  } catch (error) {
+    console.log("LOGIN ERROR:", error);
+    console.log("SERVER RESPONSE:", error.response?.data);
+
+    alert(
+      error.response?.data?.message ||
+      "Login failed"
+    );
+  }
+};
+
+
+  return (
+    <div className="login-page">
+      <div className="login-box">
+
+        <div className="logo">
+          Shop<span>Easy</span>
+        </div>
+
+        <h2>Welcome Back!</h2>
+
+        <p className="subtitle">
+          Login to your account
+        </p>
+
+        <form onSubmit={handleLogin}>
+
+          <div className="input-group">
+            <label>Email</label>
+
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Password</label>
+
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+            />
+          </div>
+
+          <div className="options">
+
+            <label>
+              Remember me
+              <input type="checkbox" />
+            </label>
+
+            <a href="/">
+              Forgot Password?
+            </a>
+
+          </div>
+
+          <button type="submit">
+            Login
+          </button>
+
+        </form>
+
+        <p className="signup">
+          Don't have an account?
+          <br />
+
+          <a href="/register">
+            Sign Up
+          </a>
+        </p>
+
+      </div>
+    </div>
+  );
+}
+
+export default Login;
+
+
+/* import  { useState } from "react";
 import axios from "axios";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +157,7 @@ function Login() {
       alert("Please fill in all fields");
       return;
     }
+    
     // connect to backend api
     try{
       const response=await axios.post(
@@ -38,6 +180,10 @@ function Login() {
         alert(error.response?.data?.message ||
               error.message ||
              "Login failed");
+
+       //clear input fields
+      setEmail("");
+      setPassword("");
     }
 
   };
@@ -97,4 +243,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Login; */
