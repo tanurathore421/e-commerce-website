@@ -6,7 +6,7 @@ const userAuthSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-       lowercase: true,
+       uppercase: true,
     },
 
     email: {
@@ -30,6 +30,7 @@ const userAuthSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      uppercase: true,
     },
 
   },

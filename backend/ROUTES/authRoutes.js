@@ -16,13 +16,9 @@ router.post("/register", registerUser);
 // Login
 router.post("/login", loginUser);
 
-// ==========================
-// PROFILE
-// ==========================
-
+// get PROFILE
 router.get(
-  "/profile",
-  authMiddleware,getProfile)
+  "/profile", authMiddleware,getProfile)
  
 
 module.exports = router;

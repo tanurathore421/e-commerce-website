@@ -87,6 +87,7 @@ function Register() {
             <label>Email</label>
             <input
               type="email"
+          
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -103,6 +104,17 @@ function Register() {
             />
           </div>
 
+            
+
+          <div className="register-input-group">
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
           
           <div className="register-input-group">
             <label>Phone</label>
@@ -125,17 +137,7 @@ function Register() {
             />
           </div>
 
-         
-
-          <div className="register-input-group">
-            <label>Confirm Password</label>
-            <input
-              type="password"
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
+       
 
           <label className="terms">
             <input type="checkbox" required />

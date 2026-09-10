@@ -1,24 +1,3 @@
-/* 
-import { NavLink } from "react-router-dom";
-import "./navbar.css";
-
-export function Navbar() {
-  return (
-    <nav className="navbar">
-      <h3 id="logo">ShopEasy</h3>
-
-      <NavLink to="/" end>HOME</NavLink>
-      <NavLink to="/products">PRODUCTS</NavLink>
-      <NavLink to="/category">CATEGORIES</NavLink>
-      <NavLink to="/cart">CART</NavLink>
-      <NavLink to="/login">LOGIN</NavLink>
-      <NavLink to="/register">REGISTER</NavLink>
-       <NavLink to="/profile">MY PROFILE</NavLink>
-    </nav>
-  );
-}
- */
-
 import { NavLink } from "react-router-dom";
 import "./navbar.css";
 

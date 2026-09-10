@@ -1,67 +1,6 @@
-/* 
 .navbar {
   width: 100%;
-  min-height: 60px;
-  background-color: #1f2937;
-
-  display: flex;
-  align-items: center;
-  gap: 25px;
-
-  padding: 0 30px;
-  box-sizing: border-box;
-
-  position: relative;
-  z-index: 1000;
-}
-
-#logo {
-  color: orange;
-  font-family: cursive;
-  font-style: italic;
-  font-size: 35px;
-  margin: 0;
-  margin-right: auto;
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 500;
-  padding: 10px 5px;
-}
-
-/* ACTIVE TAB */
-/*.navbar a.active {
-  color: red;
-  background-color: white;
-}
-
-/* Hover */
-/*.navbar a:hover {
-  color: #ff5555;
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-    padding: 15px;
-  }
-
-  #logo {
-    width: 100%;
-    text-align: center;
-    margin-right: 0;
-  }
-}
-
- */
- .navbar {
-  width: 100%;
-  min-height: 60px;
+  min-height: 80px;
   background-color: #1f2937;
 
   display: flex;
@@ -71,7 +10,9 @@
   padding: 0 30px;
   box-sizing: border-box;
 
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 1000;
 }
 
@@ -163,4 +104,10 @@
   .navbar a {
     order: 3;
   }
+}
+
+/* KEEP CONTENT BELOW NAVBAR */
+body {
+  margin: 0;
+  padding-top: 80px;
 }

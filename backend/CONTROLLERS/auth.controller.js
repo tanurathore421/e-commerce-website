@@ -55,14 +55,29 @@ const registerUser = async (req, res) => {
 // Login
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password,captcha } = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || !captcha) {
       return res.status(400).json({
-        message: "Email and password are required",
+        message: "Email, password, and captcha are required",
       });
     }
 
+    console.log("USER ENTERED:", captcha);
+console.log("SESSION CAPTCHA:", req.session.captcha);
+console.log("SESSION ID:", req.sessionID);
+
+    // Check if captcha matches
+    if(captcha.toUpperCase() !== req.session.captcha){
+      return res.status(400).json({
+        message: "Invalid captcha",
+      });
+    }
+
+    // Clear captcha from session after validation
+    delete req.session.captcha;
+   
+    
     // Find registered user
     const user = await Auth.findOne({ email });
 
