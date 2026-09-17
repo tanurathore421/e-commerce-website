@@ -1,83 +1,84 @@
 
-import React from "react";
 import "./ProductList.css";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function ProductList() {
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = [
-    {
-      id: 1,
-      name: "Running Shoes",
-      price: 999,
-      image: "https://media.istockphoto.com/id/1153461934/photo/sport-sneakers-with-neon-light-minimalism-concept.webp?a=1&b=1&s=612x612&w=0&k=20&c=t8vP6ktqh9v5WctuZwxnCds564sDvzYYzM2MQlGAlSk="
-    },
-    {
-      id: 2,
-      name: "Smart Watch",
-      price: 1499,
-      image: "https://images.unsplash.com/photo-1637160151663-a410315e4e75?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D"
-    },
-    {
-      id: 3,
-      name: "Wireless Headphones",
-      price: 1999,
-      image: "https://images.unsplash.com/photo-1545127398-14699f92334b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8d2lyZWxlc3MlMjBoZWFkcGhvbmVzfGVufDB8fDB8fHww"
-    },
-    {
-      id: 4,
-      name: "Backpack",
-      price: 799,
-      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja3BhY2t8ZW58MHx8MHx8fDA%3D"
-    },
-     {
-      id: 5,
-      name: " Chanel Perfume",
-      price: 969,
-      image: "https://images.unsplash.com/photo-1614179402100-5f4f3387f265?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDV8fHxlbnwwfHx8fHw%3D"
-    },
-     {
-      id: 6,
-      name: "Lipgloss",
-      price: 599,
-      image: "https://images.unsplash.com/photo-1640317372997-b76e600ee5ef?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    },
-     {
-      id: 7,
-      name: "Heels",
-      price: 1499,
-      image: "https://images.unsplash.com/photo-1519226719127-9e805abb99b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE3fHx8ZW58MHx8fHx8"
-    },
-     {
-      id: 8,
-      name: "Sunglasses",
-      price: 450,
-      image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    },
-     {
-      id: 9,
-      name: "Shirt",
-      price: 799,
-      image: "https://images.unsplash.com/photo-1740711152088-88a009e877bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNoaXJ0fGVufDB8fDB8fHww"
-    },
-     {
-      id: 10,
-      name: "Jacket",
-      price: 2500,
-      image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=436&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    },
-  ];
+  const getProducts = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/products/all",
+      );
+
+      setProducts(response.data);
+    } catch (error) {
+      console.log("GET PRODUCTS ERROR:", error);
+      alert("Unable to load products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  if (loading) {
+    return <h2>Loading products...</h2>;
+  }
+
+  //add to cart function
+  const addToCart = (product) => {
+    // Get existing cart
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Check product already exists
+    const existingProduct = existingCart.find(
+      (item) => item._id === product._id,
+    );
+
+    let updatedCart;
+
+    if (existingProduct) {
+      // Increase quantity
+      updatedCart = existingCart.map((item) =>
+        item._id === product._id
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+            }
+          : item,
+      );
+    } else {
+      // Add new product
+      updatedCart = [
+        ...existingCart,
+        {
+          ...product,
+          quantity: 1,
+        },
+      ];
+    }
+
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    alert("Product added to cart!");
+
+    navigate("/cart");
+  };
 
   return (
     <div className="product-page">
-
       <h1>Our Products</h1>
 
       <div className="product-container">
-
         {products.map((product) => (
-
           <div className="product-card" key={product.id}>
-
             <img
               src={product.image}
               alt={product.name}
@@ -86,27 +87,18 @@ function ProductList() {
 
             <h2>{product.name}</h2>
 
-            <p className="price">
-              ₹ {product.price}
-            </p>
+            <p className="price">₹ {product.price}</p>
 
-            <button className="details-btn">
-              View Details
-            </button>
+            <button className="details-btn">Buy Now</button>
 
-            <button className="cart-btn">
+            <button className="cart-btn" onClick={() => addToCart(product)}>
               Add to Cart
             </button>
-
           </div>
-
         ))}
-
       </div>
-
     </div>
   );
 }
 
 export default ProductList;
-

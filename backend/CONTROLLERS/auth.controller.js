@@ -63,9 +63,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    console.log("USER ENTERED:", captcha);
-console.log("SESSION CAPTCHA:", req.session.captcha);
-console.log("SESSION ID:", req.sessionID);
+  
 
     // Check if captcha matches
     if(captcha.toUpperCase() !== req.session.captcha){
@@ -76,6 +74,7 @@ console.log("SESSION ID:", req.sessionID);
 
     // Clear captcha from session after validation
     delete req.session.captcha;
+    
    
     
     // Find registered user
@@ -114,7 +113,7 @@ console.log("SESSION ID:", req.sessionID);
 
     
     console.log("Token:", token);
-    console.log("Token type:", typeof token);
+ 
 
 
     // Login successful

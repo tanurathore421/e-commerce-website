@@ -8,8 +8,11 @@ import ProductList from "./pages/PRODUCTS/ProductList";
 import { Footer } from "./components/FOOTER/footer";
 import Categories from "./pages/CATEGORY/categories";
 import Profile from "./pages/PROFILE/Profile";
+import Cart from "./pages/CART/cart";
+
 
 function App() {
+ 
   return (
     <BrowserRouter>
       <Navbar />
@@ -20,6 +23,8 @@ function App() {
         <Route path="/products" element={<ProductList />} />
         <Route path="/category" element={<Categories />} />
          <Route path="/profile" element={<Profile />} />
+
+           <Route path="/cart" element={<Cart />} />
       </Routes>
       <Footer />
     </BrowserRouter>
