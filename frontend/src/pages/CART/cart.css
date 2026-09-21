@@ -88,17 +88,20 @@
 .quantity button {
   width: 32px;
   height: 32px;
-
   border: 1px solid #ddd;
-
   background: white;
-  color:black;
-
+  color: black;
   font-size: 18px;
-
   cursor: pointer;
-
   border-radius: 5px;
+
+  /* Center + and - */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  line-height: 1;
 }
 
 .quantity button:hover {
@@ -196,11 +199,12 @@
 
   background: white;
 
+
   text-align: center;
 
   border-radius: 10px;
 
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
 }
 
 .empty-cart h2 {

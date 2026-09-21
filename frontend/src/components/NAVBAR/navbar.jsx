@@ -21,6 +21,7 @@ export function Navbar() {
       <NavLink to="/login">LOGIN</NavLink>
       <NavLink to="/register">REGISTER</NavLink>
       <NavLink to="/profile">MY PROFILE</NavLink>
+      <NavLink to="/orders">MY ORDERS</NavLink>
     </nav>
   );
 }

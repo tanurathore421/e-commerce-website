@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 function ProductList() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
   const getProducts = async () => {
     try {
       const response = await axios.get(
@@ -31,6 +33,7 @@ function ProductList() {
   if (loading) {
     return <h2>Loading products...</h2>;
   }
+
 
   //add to cart function
   const addToCart = (product) => {
@@ -72,13 +75,39 @@ function ProductList() {
     navigate("/cart");
   };
 
+
+
+// place order function 
+const handleBuy=async(product)=>{
+  try{
+    const response=await axios.post("http://localhost:3000/api/orders/orders",
+      {
+        productId:product._id,
+        quantity:1
+    },
+  {
+    withCredentials:true
+  }
+  );
+  
+  if(response.status===201){
+    alert("Order placed successfully");
+    navigate("/orders");
+
+  }
+}catch(err){
+    console.error("Error placing order:", err);
+    alert("Failed to place order");
+  }
+}
+
   return (
     <div className="product-page">
       <h1>Our Products</h1>
 
       <div className="product-container">
         {products.map((product) => (
-          <div className="product-card" key={product.id}>
+          <div className="product-card" key={product._id}>
             <img
               src={product.image}
               alt={product.name}
@@ -89,7 +118,9 @@ function ProductList() {
 
             <p className="price">₹ {product.price}</p>
 
-            <button className="details-btn">Buy Now</button>
+            <button className="details-btn"  onClick={() => handleBuy(product)}>
+              Buy Now
+              </button>
 
             <button className="cart-btn" onClick={() => addToCart(product)}>
               Add to Cart

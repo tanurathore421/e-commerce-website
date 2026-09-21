@@ -9,6 +9,8 @@ import { Footer } from "./components/FOOTER/footer";
 import Categories from "./pages/CATEGORY/categories";
 import Profile from "./pages/PROFILE/Profile";
 import Cart from "./pages/CART/cart";
+import Orders from "./pages/ORDERS/Order";
+
 
 
 function App() {
@@ -25,6 +27,9 @@ function App() {
          <Route path="/profile" element={<Profile />} />
 
            <Route path="/cart" element={<Cart />} />
+             <Route path="/orders" element={<Orders />} />
+
+    
       </Routes>
       <Footer />
     </BrowserRouter>
