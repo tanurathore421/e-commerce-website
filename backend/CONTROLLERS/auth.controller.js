@@ -2,11 +2,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Auth = require("../MODELS/auth.model");
 
-
 // Register
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password , phone, address} = req.body;
+    const { name, email, password, phone, address } = req.body;
 
     if (!name || !email || !password || !phone || !address) {
       return res.status(400).json({
@@ -31,7 +30,7 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
-      address
+      address,
     });
 
     res.status(201).json({
@@ -55,7 +54,7 @@ const registerUser = async (req, res) => {
 // Login
 const loginUser = async (req, res) => {
   try {
-    const { email, password,captcha } = req.body;
+    const { email, password, captcha } = req.body;
 
     if (!email || !password || !captcha) {
       return res.status(400).json({
@@ -63,10 +62,8 @@ const loginUser = async (req, res) => {
       });
     }
 
-  
-
     // Check if captcha matches
-    if(captcha.toUpperCase() !== req.session.captcha){
+    if (captcha.toUpperCase() !== req.session.captcha) {
       return res.status(400).json({
         message: "Invalid captcha",
       });
@@ -74,9 +71,7 @@ const loginUser = async (req, res) => {
 
     // Clear captcha from session after validation
     delete req.session.captcha;
-    
-   
-    
+
     // Find registered user
     const user = await Auth.findOne({ email });
 
@@ -88,10 +83,7 @@ const loginUser = async (req, res) => {
     }
 
     // Compare  password
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
       return res.status(401).json({
@@ -99,7 +91,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-     // Generate token
+    // Generate token
     const token = jwt.sign(
       {
         userId: user._id,
@@ -108,13 +100,14 @@ const loginUser = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "1d",
-      }
+      },
     );
 
-    
     console.log("Token:", token);
- 
 
+    // Store user ID and login status in session
+    req.session.userId = user._id;
+    req.session.isLoggedIn = true;
 
     // Login successful
     res.status(200).json({
@@ -124,7 +117,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
       },
-      token:token,
+      token: token,
     });
   } catch (error) {
     res.status(500).json({
@@ -135,38 +128,29 @@ const loginUser = async (req, res) => {
 };
 
 //get profile
-const getProfile =  async (req, res) => {
-    try {
+const getProfile = async (req, res) => {
+  try {
+    // req.userId came from authMiddleware
+    const user = await Auth.findById(req.userId).select("-password");
 
-      // req.userId came from authMiddleware
-      const user = await Auth
-        .findById(req.userId)
-        .select("-password");
-
-      if (!user) {
-        return res.status(404).json({
-          message: "User not found",
-        });
-      }
-
-      res.json(user);
-
-    } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        message: "Could not get profile",
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
       });
     }
-  };
 
+    res.json(user);
+  } catch (error) {
+    console.log(error);
 
-
+    res.status(500).json({
+      message: "Could not get profile",
+    });
+  }
+};
 
 module.exports = {
   registerUser,
   loginUser,
   getProfile,
- 
 };
-

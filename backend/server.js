@@ -1,9 +1,14 @@
+require("dotenv").config({
+    path: __dirname + "/.env"
+});
+
 const express=require("express");
 const connectDB = require("./DB/db");
 const dotenv = require("dotenv");
 const authRoutes=require("./ROUTES/authRoutes");
 const captchaRoutes=require("./ROUTES/captchaRoutes");
 const productRoutes=require("./ROUTES/productRoutes");
+const orderRoutes=require("./ROUTES/orderRoutes");
 const cors=require("cors");
 const session = require("express-session");
 
@@ -21,11 +26,11 @@ app.use(session(
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-    /*   cookie: {
+      cookie: {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax"
-        } */
+            secure: false, // Set to true if using HTTPS
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+        } 
    }
 ));
 
@@ -35,7 +40,7 @@ app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/captcha",captchaRoutes);
 app.use("/api/products",productRoutes);
-
+app.use("/api/orders",orderRoutes);
 const PORT=process.env.PORT||5000;
 
 app.listen(PORT,()=>{
