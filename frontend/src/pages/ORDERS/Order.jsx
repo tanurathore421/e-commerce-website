@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Order.css";
 
@@ -6,26 +6,35 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-const fetchOrders = async () => {
-  try {
-    const token = localStorage.getItem("token");
+  //get orders
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const response = await axios.get(
-      "http://localhost:3000/api/orders/orders",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      if (!token) {
+        console.log("No token found");
+        return;
       }
-    );
 
-    setOrders(response.data.orders);
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+      const response = await axios.get(
+        "http://localhost:3000/api/orders/orders",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setOrders(response.data.orders || []);
+    } catch (error) {
+      console.error(
+        "Error fetching orders:",
+        error.response?.data || error.message,
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchOrders();
@@ -40,6 +49,58 @@ const fetchOrders = async () => {
     );
   }
 
+  // Calculate total of all orders
+  const grandTotal = orders.reduce((total, order) => {
+    const price = order.productId?.price || 0;
+    const quantity = order.quantity || 0;
+
+    return total + price * quantity;
+  }, 0);
+
+  //cancel order
+  const cancelOrder = async (orderId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.log("No token found");
+        return;
+      }
+
+      const confirmed = window.confirm(
+        "Are you sure you want to cancel this order?",
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:3000/api/orders/${orderId}/cancel`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      // Update the status immediately in the UI
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, status: "Cancelled" } : order,
+        ),
+      );
+    } catch (error) {
+      console.error(
+        "Error cancelling order:",
+        error.response?.data || error.message,
+      );
+
+      alert(error.response?.data?.message || "Failed to cancel order");
+    }
+  };
+
   return (
     <div className="orders-page">
       <h1>My Orders</h1>
@@ -50,47 +111,79 @@ const fetchOrders = async () => {
           <p>Your previous orders will appear here.</p>
         </div>
       ) : (
-        <div className="orders-list">
-          {orders.map((order) => {
-            const product = order.productId;
+        <>
+          <div className="orders-list">
+            {orders.map((order) => {
+              const product = order.productId;
 
-            return (
-              <div className="order-card" key={order._id}>
-                {product?.image && (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="order-image"
-                  />
-                )}
+              // Calculate individual order total
+              const orderTotal = (product?.price || 0) * (order.quantity || 0);
 
-                <div className="order-details">
-                  <h2>{product?.name || "Product"}</h2>
+              return (
+                <div className="order-card" key={order._id}>
+                  {product?.image && (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="order-image"
+                    />
+                  )}
 
-                  <p>
-                    <strong>Quantity:</strong> {order.quantity}
-                  </p>
+                  <div className="order-details">
+                    <h2>{product?.name || "Product"}</h2>
 
-                  <p>
-                    <strong>Status:</strong>{" "}
-                    <span className="status">
-                      {order.status}
-                    </span>
-                  </p>
+                    <p>
+                      <strong>Price:</strong> ₹ {product?.price || 0}
+                    </p>
 
-                  <p>
-                    <strong>Order ID:</strong> {order._id}
-                  </p>
+                    <p>
+                      <strong>Quantity:</strong> {order.quantity}
+                    </p>
 
-                  <p>
-                    <strong>Ordered on:</strong>{" "}
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </p>
+                    <p>
+                      <strong>Total:</strong> ₹ {orderTotal}
+                    </p>
+
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      <span className="status">
+                        {order.status || "Pending"}
+                      </span>
+                    </p>
+
+                    {order.status !== "Cancelled" &&
+                      order.status !== "Shipped" &&
+                      order.status !== "Delivered" && (
+                        <button
+                          className="cancel-order-btn"
+                          onClick={() => cancelOrder(order._id)}
+                        >
+                          Cancel Order
+                        </button>
+                      )}
+
+                    <p>
+                      <strong>Order ID:</strong> {order._id}
+                    </p>
+
+                    <p>
+                      <strong>Ordered on:</strong>{" "}
+                      {order.orderDate
+                        ? new Date(order.orderDate).toLocaleDateString()
+                        : "Date unavailable"}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+
+          {/* Grand Total */}
+          <div className="grand-total">
+            <h2>Total Bill</h2>
+            <h3>₹ {grandTotal}</h3>
+          </div>
+        </>
       )}
     </div>
   );
