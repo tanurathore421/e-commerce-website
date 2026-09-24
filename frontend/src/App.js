@@ -10,6 +10,7 @@ import Categories from "./pages/CATEGORY/categories";
 import Profile from "./pages/PROFILE/Profile";
 import Cart from "./pages/CART/cart";
 import Orders from "./pages/ORDERS/Order";
+import AdminDashboard from "./pages/admin/admin";
 
 
 
@@ -28,6 +29,7 @@ function App() {
 
            <Route path="/cart" element={<Cart />} />
              <Route path="/orders" element={<Orders />} />
+  <Route path="/admin" element={<AdminDashboard />} />
 
     
       </Routes>

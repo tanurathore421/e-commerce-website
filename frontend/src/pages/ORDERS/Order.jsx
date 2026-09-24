@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Order.css";
 
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -101,6 +102,43 @@ const Orders = () => {
     }
   };
 
+  //remove order
+  const removeOrder= async (orderId) => {
+    try{
+      const token = localStorage.getItem("token");
+
+      if(!token){
+        console.log("No token found");
+        return;
+      }
+    console.log("Deleting order ID:", orderId);
+
+      const confirmed = window.confirm(
+        "Are you sure you want to remove this order?",
+      );  
+
+      if(!confirmed){
+        return;
+      }
+
+      await axios.delete(
+        `http://localhost:3000/api/orders/remove/${orderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+    }catch(error){
+      console.error(
+        "Error removing order:",
+        error.response?.data || error.message,
+      );
+      alert(error.response?.data?.message || "Failed to remove order");
+    }
+  }
+
   return (
     <div className="orders-page">
       <h1>My Orders</h1>
@@ -159,6 +197,18 @@ const Orders = () => {
                           onClick={() => cancelOrder(order._id)}
                         >
                           Cancel Order
+                        </button>
+                      )}
+
+                      
+                    {
+                      order.status !== "Shipped" &&
+                      order.status !== "Delivered" && (
+                        <button
+                          className="cancel-order-btn"
+                          onClick={() => removeOrder(order._id)}
+                        >
+                          Remove Order
                         </button>
                       )}
 

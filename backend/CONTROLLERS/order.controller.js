@@ -150,7 +150,15 @@ const cancelOrder = async (req, res) => {
     });
   }
 };
- 
 
 
-module.exports = { placeOrder, getOrder,cancelOrder };
+
+module.exports = {
+  placeOrder,
+  getOrder,
+  cancelOrder,
+
+};
+
+
+
