@@ -67,6 +67,9 @@ function Login() {
       console.log("SERVER RESPONSE:", error.response?.data);
 
       alert(error.response?.data?.message || "Login failed");
+
+      // Refresh captcha after failed login
+      getCaptcha();
     }
   };
 

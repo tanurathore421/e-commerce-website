@@ -22,7 +22,7 @@ function Profile() {
 
         // If no token, go to login
         if (!token) {
-          navigate("/login");
+          navigate("/auth");
           return;
         }
 
@@ -52,7 +52,7 @@ function Profile() {
         localStorage.removeItem("token");
 
         // Go to login
-        navigate("/login");
+        navigate("/auth");
 
       } finally {
         setLoading(false);
@@ -69,7 +69,7 @@ function Profile() {
 
     localStorage.removeItem("token");
 
-    navigate("/login");
+    navigate("/auth");
   };
 
 

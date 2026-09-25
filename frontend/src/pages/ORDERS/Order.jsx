@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Order.css";
+import { useNavigate } from "react-router-dom";
 
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   //get orders
   const fetchOrders = async () => {
@@ -14,6 +17,7 @@ const Orders = () => {
 
       if (!token) {
         console.log("No token found");
+         navigate("/auth");
         return;
       }
 

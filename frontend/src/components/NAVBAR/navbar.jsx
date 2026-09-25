@@ -18,10 +18,11 @@ export function Navbar() {
       <NavLink to="/products">PRODUCTS</NavLink>
       <NavLink to="/category">CATEGORIES</NavLink>
       <NavLink to="/cart">CART</NavLink>
-      <NavLink to="/login">LOGIN</NavLink>
-      <NavLink to="/register">REGISTER</NavLink>
+{/*       <NavLink to="/login">LOGIN</NavLink>
+      <NavLink to="/register">REGISTER</NavLink> */}
       <NavLink to="/profile">MY PROFILE</NavLink>
       <NavLink to="/orders">MY ORDERS</NavLink>
+            <NavLink to="/auth">Login/Sign Up</NavLink>
     </nav>
   );
 }
